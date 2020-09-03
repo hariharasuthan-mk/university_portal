@@ -3,10 +3,9 @@
 @section('title', $title)
 
 @section('content')
-
 <?php
         if($batch_data->status=="no"){
-          $tr_class   = 'table-Danger';
+          $tr_class   = 'table-Danger'; 
           $msg_status = 'Not yet approved';
         }else{
           $tr_class   = 'table-Dark';
@@ -18,25 +17,25 @@
         else{
                $result_class   = 'bg-warning';
         }    
-
 ?>
+
 <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
                 <h2> {{ $title }}</h2>
             </div>
             <div class="pull-right">
-                <a class="btn btn-primary" href="{{ route('studentbatchs.index') }}"> Back</a>
+                <a class="btn btn-primary" href="{{ route('studentbatchs.index') }}">Back</a>
             </div>
         </div>
 </div>
-
 
 @if ($message = Session::get('success'))
         <div class="alert alert-success">
             <p>{{ $message }}</p>
         </div>
 @endif
+
 <table class="table table-hover">
   <thead>
     <tr>
@@ -71,7 +70,6 @@
 </table>
 <hr style="height:2px;border-width:0;color:gray;background-color:gray">
   @include('student.list')
-
 <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
@@ -105,19 +103,14 @@
               $responded = $responded_user[0]->name;              
               ?>
               {{ $arr_batch_status[$data->detail_status] }}
-
-            </td>
-            
+            </td>            
             <td> 
              {{ $requested }}
-             </td>
-
+            </td>
             <td>{{ $responded }}</td>
-
             <td>
               {{date('d-m-Y H:i:s', strtotime($data->detail_updatedon))}}
             </td>
-
             <td>
               {{date('d-m-Y H:i:s', strtotime($data->detail_updatedon))}}
             </td>
@@ -126,6 +119,7 @@
   </tbody>
 </table>
 <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+
 @if ($file_obj)
     @include('Files.show_file')
 @else
@@ -140,11 +134,15 @@
 @endcan
 @if ( ($batch_data->status=="yes") && ($result_flag == false))
 @can('result-create')
+
 <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+
   @include('results.add_form')
 @endcan
 @endif
+
 <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+
 @if ( ($batch_data->status=="yes") && ($result_flag == true)) 
  @include('results.show')
 @endif
