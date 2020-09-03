@@ -4,20 +4,21 @@
 
 @section('content')
 
-<?php   
- if($batch_data->status=="no"){
+<?php
+        if($batch_data->status=="no"){
           $tr_class   = 'table-Danger';
           $msg_status = 'Not yet approved';
-}else{
+        }else{
           $tr_class   = 'table-Dark';
           $msg_status = 'Approved';
-}
-if($student_result_status =='yes'){
-          $result_class   = 'bg-success';   
-}                         
-else{
-          $result_class   = 'bg-warning';
-}
+        }
+        if($student_result_status =='yes'){
+               $result_class   = 'bg-success';   
+        }                         
+        else{
+               $result_class   = 'bg-warning';
+        }    
+
 ?>
 <div class="row">
         <div class="col-lg-12 margin-tb">
@@ -30,12 +31,12 @@ else{
         </div>
 </div>
 
+
 @if ($message = Session::get('success'))
         <div class="alert alert-success">
             <p>{{ $message }}</p>
         </div>
 @endif
-
 <table class="table table-hover">
   <thead>
     <tr>
@@ -69,29 +70,82 @@ else{
   </tbody>
 </table>
 <hr style="height:2px;border-width:0;color:gray;background-color:gray">
-@include('student.list')
-@include('studentbatchhistory.detail')
+  @include('student.list')
+
+<div class="row">
+        <div class="col-lg-12 margin-tb">
+            <div class="pull-left">
+                <h3>Student Batch history details</h3>
+                <?php //var_dump($batch_history);?>
+            </div>            
+        </div>
+</div>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Comment</th>
+      <th>Status</th>      
+      <th>Requested By</th>
+      <th>Requested To</th>
+      <th>Requested On</th>
+      <th>Updated On</th>
+    </tr>
+  </thead>
+  <tbody>
+        @foreach($batch_history as $data)        
+        <tr >
+            <td> {{ $data->comment }} </td>
+            <td> {{ $data->body }} </td>
+            <td>               
+              <?php
+              $requested_user = \App\Studentbatch::get_user_detail($data->requested);
+              $responded_user = \App\Studentbatch::get_user_detail($data->responded);
+              $requested = $requested_user[0]->name;
+              $responded = $responded_user[0]->name;              
+              ?>
+              {{ $arr_batch_status[$data->detail_status] }}
+
+            </td>
+            
+            <td> 
+             {{ $requested }}
+             </td>
+
+            <td>{{ $responded }}</td>
+
+            <td>
+              {{date('d-m-Y H:i:s', strtotime($data->detail_updatedon))}}
+            </td>
+
+            <td>
+              {{date('d-m-Y H:i:s', strtotime($data->detail_updatedon))}}
+            </td>
+        </tr>
+        @endforeach
+  </tbody>
+</table>
 <hr style="height:2px;border-width:0;color:gray;background-color:gray">
 @if ($file_obj)
     @include('Files.show_file')
 @else
-  @can('files-create')
+@can('files-create')
     @include('Files.add_form')
-  @endcan    
+@endcan    
 @endif
 @can('studentbatchhistory-create')
-  @if ($batch_data->status=="no")
-    @include('studentbatchhistory.add_form')
-  @endif
+@if ($batch_data->status=="no")    
+    @include('studentbatchhistory.add_form')    
+@endif
 @endcan
 @if ( ($batch_data->status=="yes") && ($result_flag == false))
-  @can('result-create')
+@can('result-create')
 <hr style="height:2px;border-width:0;color:gray;background-color:gray">
-    @include('results.add_form')
-  @endcan
+  @include('results.add_form')
+@endcan
 @endif
 <hr style="height:2px;border-width:0;color:gray;background-color:gray">
-  @if ( ($batch_data->status=="yes") && ($result_flag == true))
-    @include('results.show')
-  @endif
+@if ( ($batch_data->status=="yes") && ($result_flag == true)) 
+ @include('results.show')
+@endif
 @endsection
